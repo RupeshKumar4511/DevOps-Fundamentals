@@ -1,0 +1,82 @@
+# list is also called sequence datatype
+students:!!seq
+ - marks
+ - name
+ - roll_no
+
+# Some of the keys of the seq can be empty which is called Sparse seq
+sparse seq:!!seq
+ - marks
+ - name
+ -
+ - Null
+ - roll_no
+
+
+# Nested List 
+-
+ - hello
+ - world
+- 
+ - Yaml
+ - world
+
+# key: value pairs also called maps
+!!map
+
+# nested mapping : map within an map
+name: John David
+role:
+ age: 23
+ job: swe
+
+# This is same as 
+name: John David
+role: {age: 23,job: swe}
+ 
+
+# pairs : keys may have duplicate values
+# !!pairs
+pairs_example: !!pairs
+ - job: student
+ - job: teacher
+
+# This will be array of hash tables and same as 
+
+pairs_example:!!pairs [job:student,job:teacher]
+
+# !!set allows us to have unique values.
+names: !!set
+ ? John
+ ? David
+
+# dictionary is called !!omap . It is basically a list of key-value pairs
+# Here I am using tab in place of space after first line
+people: !!omap
+  - John:
+      age: 23
+      job: student
+  - David:
+      age: 24
+      job: swe
+
+# reusing some properties using anchors(which means what we want to copy and where do you want to copy it.)
+
+likings: &base
+  fav_fruits: mango
+  dislikes: grapes
+
+person1:
+  name: Kunal
+  <<: *base
+
+person2:
+  name: John
+  <<: *base
+  dislikes: cherry
+
+
+ 
+ 
+
+

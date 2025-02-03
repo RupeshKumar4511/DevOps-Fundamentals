@@ -1,0 +1,20 @@
+#key-value document
+hello:"This is yaml best practice"
+1:"This is one"
+---
+#list 
+ -apple
+ -orange
+---
+#Block style for list
+
+ciities:
+ -Karnal
+ -Kurushetra
+ -Ambala
+---
+# Flow style for list 
+cities: [new Delhi,Mumbai]
+---
+# Flow style for key:value pairs
+{fruit1:"mango",fruit2:apple}

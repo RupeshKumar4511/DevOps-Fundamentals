@@ -1,0 +1,62 @@
+#string variable
+hello: "YAML"
+fruit: mango
+job: 'swe'
+# All the words after column including space are string variables.
+
+# write multiple lines 
+Morals:|
+Honest is the best policy.
+We should honest with our work.
+
+# Write a single lines in multiple lines 
+message:>
+This is 
+all will 
+be in one
+line.
+
+
+number1:232
+number2:32.34
+booleanValue:No #n,N,False,false,FALSE
+
+booleanValue:!!bool No
+# same as for true =>y , Y, Yes, True,TRUE,true
+
+# specify the type
+zero:!!int 0
+positiveNumber:!!int 23
+negativeNumber:!!int -21
+binary:!!int 0b11001
+octalNumm:!!int 023426
+hexNum:!!int 0x45
+commaValue:!!int +54_000 # 54,000
+
+
+
+
+# floating point numbers
+marks:!!float 23.23
+infiniteValue:!!float .inf
+not a number:.nan
+
+
+exponential numbers:5.345E23
+negative exponential numbers:5.345E-23
+
+
+# null
+variable:!!null Null # or null NULL or ~
+~:this is null key
+
+# dates and time in yaml
+date:!!timestamp 2025-01-12
+india_time_with_zone:2025-01-15T02:30:00 +5:30
+no time zone:2024-10-15T14:30:00
+
+# if no time zone is provided then UTC time will be considered and Indian time is ahead of UTC time by 5:30. 
+ 
+
+
+

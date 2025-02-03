@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<School name="DPS" principal='someone'>
+    <Students>
+        <Student>
+            <name>"abc"</name>
+            <roll_no>23</roll_no>
+            <marks>45</marks>
+        </Student>
+    </Students>
+
+</School>
+
+<!--Here each tag represents a property of an object with multiple entity and there are some single valued attributes of School.
+
+Trick : multiple valued property means a tag and single value means an attribute. -->

@@ -1,0 +1,24 @@
+{
+    "_comment":"Each square represents the property of a object and each curly braces represents the a single entity.",
+    "Schoool":[
+        {
+            "name":"DPS",
+            "principal":"someone"
+        },
+        {
+            "Students":[
+                {
+                    "name":"Rahul",
+                    "rollNo":23,
+                    "marks":90
+                },
+                {
+                    "name":"Rohan",
+                    "rollNo":24,
+                    "marks":89
+                }
+            ]
+        }
+    ]
+}
+

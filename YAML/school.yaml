@@ -1,0 +1,13 @@
+Schoool:
+# name,principal,students are the properties of school. 
+ - name: DPS
+   principal: someone
+ - Students:
+   - name: Rahul
+     rollNo: 23
+     marks: 90
+   - name: Rohan
+     rollNo: 24
+     marks: 89
+
+# imagine diagram like a json and convert it into yaml
