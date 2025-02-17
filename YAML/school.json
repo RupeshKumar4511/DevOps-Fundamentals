@@ -1,5 +1,5 @@
 {
-    "_comment":"Each square represents the property of a object and each curly braces represents the a single entity.",
+    "_comment":"Each curly braces represents the properties of an object and these properties are combined in a square bracet . All the single value attributes are in curly braces and all the multivalued attributes are combined in square bracket",
     "Schoool":[
         {
             "name":"DPS",
