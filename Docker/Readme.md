@@ -45,7 +45,7 @@ A container registry is a centralized repository where container images are stor
 Interoperability : It allows different tools (e.g., Docker, Podman, containerd) to interact with OCI-compliant registries.
 <br>
 Read more at : https://opencontainers.org/about/overview/
-<br>
+
 # About Docker Basic Commands : 
 Dockers is an isolated environment in which we are running images in the container.
 <br>
@@ -58,13 +58,13 @@ https://www.geeksforgeeks.org/docker-instruction-commands/
 <br>
 when we write commands like :
 <br>
-docker container exec -t <containerID> bash
+"docker container exec -t <containerID> bash"
 <br>
 It means bash is attached to that container.
 <br>
 This commands only works when the specific container is running.
 <br>
-docker container prune -f: It will delete all the stopped containers.
+"docker container prune -f": It will delete all the stopped containers.
 <br>
 Alpine Images: The Alpine Linux image is a minimal, security-oriented, and lightweight Linux distribution. I It's commonly used in Docker images because of its small size and efficient nature.
 <br>
@@ -84,17 +84,18 @@ Here this commands means forwards all the request to the localhost://8080 that w
 <br>
 We can find the logs of all the container by their id
 <br>
-docker logs <first four numbers or complete container id >
+"docker logs <first four numbers or complete container id >"
 <br>
 we can also find the logs of last n seconds:
 <br>
-docker logs --since 5s <container ID>
+"docker logs --since 5s <container ID>"
 <br>
 we can remove all the images by using commands :
 ```bash
 docker rmi (docker images -q)
 ```
 <br>
+
 # How to create our own images :
 ```bash
 
@@ -112,7 +113,8 @@ CMD ["echo", "Hello world"]
 First of login using command: docker login
 
 Then push the image using command: docker push <imagename>: <tag> 
-here tag is also called version of the images. 
+here tag is also called version of the images.
+
 ```
 
 # Important Point from Docker engine: 
