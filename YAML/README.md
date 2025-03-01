@@ -8,7 +8,7 @@ Yaml automatically detects the data types
 but we can also specify the data type. 
 
 # Tools 
-Intext website: For validating yaml files
+https://www.yamllint.com/: For validating yaml files
 <br>
 datree : for validation kubernetes yaml files.
 <br>
