@@ -236,4 +236,151 @@ docker build  -t <imagename>: <version> .
 
 ```
 
-# 
+# Docker Network :
+Since Different Application running on different container and each container is isolated so if a container wants to communicate to another container then Docker Network comes in picture. 
+<br>
+There are mainly 7 types Docker Network : 
+<br>
+1. Host Network: Host machine network and container network both are same. It means all the port for the host and port used for containers are same. 
+<br>
+<br>
+2. Bridge(Default) Network : This is the default network provided by the docker which is used to connect host to the docker container.
+<br>
+<br>
+3. User Defined Bridge(Custom) Network: 
+We can create our custom bridge.Containers in the same bridge network can communicate using container names.
+<br>
+```bash 
+
+docker network create -d my_bridge
+docker run -d --name container1 --network my_bridge nginx
+docker run -d --name container2 --network my_bridge alpine sleep 1000
+
+// container1 and container2 can communicate using their names.
+
+```
+<br>
+<br>
+4. None Network:
+Disable networking for a container.
+<br>
+```bash 
+docker run --rm --network none alpine
+```
+<br>
+<br>
+5. MACVLAN Network(Used in Docker Swarm) :
+<br>
+MACVLAN allows Docker containers to appear as physical devices on the network by assigning each container a unique MAC address. This enables direct communication with external network devices without NAT (Network Address Translation).
+<br>
+How MACVLAN Works :
+<br>
+Each container gets a unique MAC address.
+<br>
+Containers can communicate with external devices as if they were separate physical hosts.
+<br>
+Bypasses Docker's default bridge network and routing.
+<br>
+Suitable for integrating with existing VLANs and enterprise networks.
+<br>
+MACVLAN Modes: 
+<br>
+Bridge Mode (default) → Containers communicate with each other and external devices.
+<br>
+Passthrough Mode → Assigns a MAC address but does not modify traffic.
+<br>
+Private Mode → Containers can't communicate with each other.
+<br>
+VEPA Mode → Requires an external switch for container communication.
+<br>
+<br>
+6. IPVLAN Network(Used in Docker Swarm): 
+<br>
+IPVLAN is similar to MACVLAN but does not assign unique MAC addresses to containers. Instead, all containers share the host's MAC address and only get unique IPs.
+<br>
+How IPVLAN Works :
+<br>
+Uses the host's MAC address for all containers.
+<br>
+Reduces network complexity compared to MACVLAN.
+<br>
+Efficient for networks where multiple MAC addresses are not allowed (e.g., cloud environments).
+<br>
+Faster than MACVLAN as it avoids Layer 2 processing.
+<br>
+IPVLAN Modes:
+<br>
+L2 Mode (default) → Containers get unique IPs and use the host's MAC.
+<br>
+L3 Mode → Containers act as separate network entities with their own IP subnets.
+<br>
+<br>
+7. Overlay Network(Used in Docker Swarm):
+Overlay networks are used in Docker Swarm to connect containers across multiple Docker hosts.
+<br>
+How Overlay Networks Work :
+<br>
+Creates a virtual network on top of the existing physical network.
+<br>
+Uses VXLAN (Virtual Extensible LAN) to encapsulate container traffic.
+<br>
+Requires Docker Swarm (docker swarm init).
+<br>
+<br>
+```bash 
+
+// Note : We can check the docker network by run command : 
+docker network ls 
+
+// Note : We can create our own custom bridge : 
+docker network create mynetwork -d bridge 
+
+// here -d means driver . Actully all the above networks are drivers. 
+
+```
+# How Two or more containers communicates : 
+```bash 
+
+docker network create -d my_bridge
+
+docker run -d --name container1 --network my_bridge -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=message mysql
+
+docker run -d -p 5500:5500 --name container2 --network my_bridge -e MYSQL_HOST=container1 -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DB=message  two-tier-app
+
+// here we can multiple environment variables each starting with "-e". 
+
+
+// container1 and container2 can communicate using their names.
+
+
+```
+
+# Docker Volumes and Storages : 
+Entire data about an application which is running in the container remains in the container. So if a container is stopped and removed accidentily then all the application's data will be lost. So to avoid this, we create a folder/path in the host os and map/bind this path to the particular docker container to store in the host file system. This concept is called docker volumes. 
+<br>
+```bash 
+// how to check the volumes in docker :
+docker volume ls 
+
+// we can create volume 
+docker volume create mysql-data 
+
+// We can check where is this volume is present in host file system. 
+docker inspect mysql-data 
+
+// Note : It will show result : Mountpoint : "/var/lib/docker/volumes/mysql-data/_data"
+
+// how to bind the path with container 
+docker run -d --name container1 --network my-bridge -v mysql-data:/var/lib/volumes/mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=root mysql 
+
+// here volume "mysql-data"(also called named volume) present in host os is bind to the docker container.
+
+
+// Another way to store data in the host os : 
+Firt Create a folder "volumes/mysql" 
+
+docker run -d --name container1 --network my-bridge -v home/ubuntu/volumes/mysql:/var/lib/volumes/mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=root mysql 
+
+```
+<br>
+
