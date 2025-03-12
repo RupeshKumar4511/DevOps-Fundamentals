@@ -1,0 +1,59 @@
+version: "3.8"
+services:
+ mysql:
+  container_name: mysql 
+  image: mysql
+  environment:
+   MYSQL_DATABASE: 'MYDB'
+   MYSQL_ROOT_PASSWORD: 'ROOT'
+  
+  ports:
+   - '3306:3306'
+  
+  volumes:
+   - mysql-data: /var/lib/mysql
+
+  networks:
+   - appNetwork
+  
+  restart: always
+  healthcheck:
+   test: ["CMD","mysqladmin","ping", "-h", "localhost","-uroot", "-proot"]
+   interval: 10s
+   timeout: 5s
+   retries: 5
+   start_period: 60s
+  
+ App: 
+  container_name: JAVA_APP 
+  build:
+   context: .
+
+  environment:
+   MYSQL_HOST: mysql
+   MYSQL_USER: 'ROOT'
+   MYSQL_PASSWORD: 'ROOT'
+   MYSQL_DATABASE: 'MYDB'
+  
+   ports:
+    - '5000:5000'
+
+  networks:
+   - appNetwork
+  
+  depends_on:
+   - mysql
+
+  restart: always
+  healthcheck: 
+   test: ["CMD_SHELL","curl -f http://localhost/health || exit 1"]
+   interval: 10s
+   timeout: 5s
+   retries: 5
+   start_period: 60s
+  
+volumes:
+ mysql-data:
+
+networks:
+ appNetwork:

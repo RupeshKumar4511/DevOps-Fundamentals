@@ -44,7 +44,7 @@ OCI Image Specification : It  defines the format of container images (e.g., Dock
 <br>
 Distribution Specification : The OCI Distribution Specification defines how container images are stored, retrieved, and distributed across different container registries. It is based on Docker's registry HTTP API V2 and ensures interoperability between different container image registries.
 <br>
-A container registry is a centralized repository where container images are stored, managed, and distributed.
+A container registry is a centralized repository where container images are stored, managed, and distributed. like : docker-hub
 <br>
 Interoperability : It allows different tools (e.g., Docker, Podman, containerd) to interact with OCI-compliant registries.
 <br>
@@ -158,6 +158,10 @@ Then we can use msyql.
 # We can exit from any bash shell or mysql by running command :
 exit 
 
+
+# We can rename the docker images 
+docker image tag myImage:latest rupeshkumar4511/myImage:latest 
+
 ```
 
 <br>
@@ -174,6 +178,8 @@ FROM ubuntu
 CMD ["echo", "Hello world"]
 
 // here ubuntu is base image 
+
+// To push the image to docker registry the image name must have username of docker registry like : rupeshkumar4511/myimage:latest
 
 3. run the command: docker build  -t <imagename>: <version>
 
@@ -232,8 +238,7 @@ When we update our code on host system then we need to update the image and we c
 ```bash 
 docker build  -t <imagename>: <version> . 
 
-// here "." denotes Dockerfile present in current directory. 
-
+// here "." denotes Dockerfile present in current directory and -t flag means tag which is used to name and optionally tag the image that is being built.. 
 ```
 
 # Docker Network :
@@ -356,7 +361,7 @@ docker run -d -p 5500:5500 --name container2 --network my_bridge -e MYSQL_HOST=c
 ```
 
 # Docker Volumes and Storages : 
-Entire data about an application which is running in the container remains in the container. So if a container is stopped and removed accidentily then all the application's data will be lost. So to avoid this, we create a folder/path in the host os and map/bind this path to the particular docker container to store in the host file system. This concept is called docker volumes. 
+Entire data about an application which is running in the container remains in the container. So if a container is stopped and removed accidentily then all the application's data will be lost. So to avoid this, we create a folder/path in the host os and map/bind this path to the particular docker container to store data in the host file system. This concept is called docker volumes. 
 <br>
 ```bash 
 // how to check the volumes in docker :
@@ -377,10 +382,185 @@ docker run -d --name container1 --network my-bridge -v mysql-data:/var/lib/volum
 
 
 // Another way to store data in the host os : 
-Firt Create a folder "volumes/mysql" 
+First Create a folder "volumes/mysql" 
 
 docker run -d --name container1 --network my-bridge -v home/ubuntu/volumes/mysql:/var/lib/volumes/mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=root mysql 
 
 ```
 <br>
 
+# Docker compose : 
+Docker Compose is a tool for defining and managing multi-container Docker applications. It allows you to define and run multiple containers as a single service using a YAML configuration file (docker-compose.yml).
+<br>
+```bash 
+// To use docker compose we need to install it 
+sudo apt-get install docker-compose
+
+// To run the docker-compose file 
+docker compose up 
+
+// To Stops and removes all containers, networks, and volumes of docker compose 
+docker compose down
+
+
+// To forcefully build the docker images and start container 
+docker compose up -d --build 
+
+```
+<br>
+```bash 
+Key Features of Docker Compose:
+
+Multi-Container Management -> Helps in running multiple dependent containers together (e.g., a web app and a database).
+
+Simplified Configuration -> Uses docker-compose.yml for defining services, networks, and volumes.
+
+Easy Service Scaling -> Allows scaling up/down services with a single command.
+
+Networking -> Automatically sets up networks between containers.
+
+Environment Management -> Supports .env files for defining variables.
+
+Volume Persistence -> Ensures data persistence between container restarts
+
+```
+<br>
+```bash 
+// Uses of docker-compose : 
+
+Ideal for local development and testing of multi-container applications.
+
+Automates container dependencies, networking, and volumes.
+
+Helps in CI/CD pipelines for consistent application deployment.
+
+
+```
+
+<br>
+
+```bash 
+// For two-tier application 
+// docker-compose.yaml 
+
+
+version:'3.8'
+# services key is used to define the containers
+services:
+ mysql: 
+  container_name:mysql
+  image:mysql 
+  environment:
+   MYSQL_DATABASE:'MYDB'
+   MYSQL_ROOT_PASSWORD:'ROOT'
+
+  ports:
+   - "3306:3306"
+  volumes:
+   - mysql-data:/var/lib/mysql 
+  networks:
+   - two-tier 
+
+  # if the healthcheck is not pass then container will restart 
+  restart: always
+
+  # healthcheck is used to check whether the container starts completely or not. 
+  healthcheck:
+   test: ["CMD","mysqladmin","ping", "-h", "localhost","-uroot", "-proot"]
+   interval: 10s
+   timeout: 5s
+   retries: 5
+   start_period: 60s
+  
+ myApp:
+  container_name:Java_app 
+  build:
+   context: . 
+  environment:
+   MYSQL_HOST:mysql
+   MYSQL_USER:'root' 
+   MYSQL_PASSWORD:'root' 
+   MYSQL_DB:'MYDB'
+
+  ports:
+   - '5000:5000'
+  networks: 
+   - two-tier 
+
+  depends_on:
+   - mysql 
+   restart: always
+   healthcheck: 
+    test: ["CMD_SHELL","curl -f http://localhost/health || exit 1"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+    start_period: 60s
+
+
+volumes:
+ mysql-data:
+
+networks:
+ two-tier 
+
+
+
+```
+
+# Multi-stage Docker Builds 
+Multi-stage builds in Docker help create lightweight, optimized images by building an application in multiple stages and copying only the necessary files into the final image. This reduces image size and improves security.
+<br>
+
+```bash 
+# How to perform Multi-stage Docker Builds 
+
+# stage 1 : base image - size 998MB (large base image is used to install the required images)
+FROM python:3.7 AS builder
+
+WORKDIR /app 
+
+COPY requirements.txt . 
+
+# requirements.txt contains the all "packagename==version" and -r indicates read dependecies from requirements.txt file . 
+
+RUN pip install -r requirements.txt 
+
+
+# stage 2 : use small base image : size 125MB
+FROM python:3.7-slim 
+
+WORKDIR /app 
+
+COPY --from=builder /usr/local/lib/python3.7/site-packges /usr/local/lib/python3.7/site-packges 
+
+COPY . . 
+
+CMD ["python","app.py"]
+
+```
+
+# Docker monitering and logging : 
+```bash 
+
+# We can find the logs of all the container by their id.
+
+"docker logs <first four numbers or complete container id >"
+
+
+# we can also find the logs of last n seconds:
+
+"docker logs --since 5s <container ID>"
+
+# We can also check the live logs on the terminal by :
+
+"docker attach <container ID>"
+# this commands attach the container terminal to our terminal shows all the live logs.
+
+
+# We can store all the logs of a container in which application is running in a file. 
+
+"nohup docker attach <ContainerID> & "
+# It will store all the logs in nohup.out file . 
+
+```
