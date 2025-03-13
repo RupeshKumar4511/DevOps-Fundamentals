@@ -240,6 +240,23 @@ docker build  -t <imagename>: <version> .
 
 // here "." denotes Dockerfile present in current directory and -t flag means tag which is used to name and optionally tag the image that is being built.. 
 ```
+<br>
+
+```bash 
+
+# We can expose the port if required
+EXPOSE 3000
+
+# To create jar file using maven(which is called Apache maven)
+RUN mvn clean instal -DskipTests=true 
+
+# -DskipTests=true  means the skips the tests of java app.
+
+# To execute JAR file 
+CMD ["java","-jar","app.jar"]
+
+```
+
 
 # Docker Network :
 Since Different Application running on different container and each container is isolated so if a container wants to communicate to another container then Docker Network comes in picture. 
@@ -396,8 +413,16 @@ Docker Compose is a tool for defining and managing multi-container Docker applic
 // To use docker compose we need to install it 
 sudo apt-get install docker-compose
 
-// To run the docker-compose file 
+// To starts the containers defined in your docker-compose.yml file.
 docker compose up 
+
+# Its Uses Cases : 
+When you already have built images and just want to run the application.
+When you have no changes in the Dockerfile or dependencies.
+Useful for starting stopped containers without rebuilding.
+
+
+
 
 // To Stops and removes all containers, networks, and volumes of docker compose 
 docker compose down
@@ -405,6 +430,15 @@ docker compose down
 
 // To forcefully build the docker images and start container 
 docker compose up -d --build 
+
+# Its Use Cases : 
+When you've made changes to the Dockerfile.
+
+When dependencies in requirements.txt, package.json, or system libraries change.
+
+When you need to ensure you're using the latest code updates in the image.
+
+Useful after modifying environment variables or config files.
 
 ```
 <br>
@@ -454,10 +488,15 @@ services:
    MYSQL_DATABASE:'MYDB'
    MYSQL_ROOT_PASSWORD:'ROOT'
 
+
+  # To get the environment variables from the .env file : 
+  env-file:
+   - ".env"
+
   ports:
    - "3306:3306"
   volumes:
-   - mysql-data:/var/lib/mysql 
+   - ./mysql-data:/var/lib/mysql 
   networks:
    - two-tier 
 
@@ -491,7 +530,7 @@ services:
    - mysql 
    restart: always
    healthcheck: 
-    test: ["CMD_SHELL","curl -f http://localhost/health || exit 1"]
+    test: ["CMD-SHELL","curl -f http://localhost/health || exit 1"]
     interval: 10s
     timeout: 5s
     retries: 5
@@ -506,6 +545,24 @@ networks:
 
 
 
+```
+<br>
+Some Important point : 
+<br>
+```bash 
+# If we have not provide "CMD []" command to run the application then We can also add this command docker-compose file.  
+
+command: sh -c "python manage.py migrate --no-input && gunicorn myapp.wsgi --bind 0.0.0.0:8000"
+
+# Here, gunicorn is a production-ready WSGI server for Django
+# "python manage.py migrate --no-input" : This command runs Django database migrations which means it ensures that all the required database,table should be made. 
+
+# Database migration is the process of applying changes to a database schema over time. It helps manage changes like creating tables, modifying columns, adding indexes, etc., in a structured way.
+
+
+#The --no-input flag prevents interactive prompts, making it suitable for automated deployments.
+
+# "gunicorn myapp.wsgi --bind 0.0.0.0:8000 " will serve this application in backend. 
 ```
 
 # Multi-stage Docker Builds 
@@ -540,6 +597,7 @@ CMD ["python","app.py"]
 
 ```
 
+
 # Docker monitering and logging : 
 ```bash 
 
@@ -563,4 +621,29 @@ CMD ["python","app.py"]
 "nohup docker attach <ContainerID> & "
 # It will store all the logs in nohup.out file . 
 
+```
+
+# Docker Scout : 
+Docker Scout is a security and analysis tool that helps scan, analyze, and monitor container images for vulnerabilities and best practices. It integrates with Docker and provides security insights to keep your images safe.
+<br>
+When we install docker desktop then docker scout tool is already installed in it. 
+<br>
+```bash 
+// To analyze a local images 
+docker scout quickview myimage:latest
+
+// To get the detailed security insights 
+docker scout cves myimage:latest
+
+
+# cves:  (Common Vulnerabilities and Exposures)
+
+```
+# Docker init 
+It is a new Docker CLI command that helps you quickly create a Dockerfile and related files for containerizing an application like docker-compose.yaml,.dockerignore  and README.docker.md file .
+<br>
+When we install docker desktop then docker init tool is already installed in it.
+<br>
+```bash 
+docker init 
 ```
