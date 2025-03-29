@@ -563,6 +563,7 @@ command: sh -c "python manage.py migrate --no-input && gunicorn myapp.wsgi --bin
 #The --no-input flag prevents interactive prompts, making it suitable for automated deployments.
 
 # "gunicorn myapp.wsgi --bind 0.0.0.0:8000 " will serve this application in backend. 
+
 ```
 
 # Multi-stage Docker Builds 
