@@ -21,4 +21,11 @@ publish
 
 ```
 
+# Advantages : 
+It lets us automate tasks like building, testing, and deploying your code whenever a specific event occurs (e.g., code push, pull request, release).
+
+
+# Learn more about it : 
+https://github.com/argoproj/argo-cd
+<br>
 Reference : techworldwithnana
