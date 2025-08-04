@@ -68,63 +68,53 @@ docker run -it ubuntu
 -it: It is short form of interactive which means don't exit out from it.
 
 
-when we write commands like :
-
-
-"docker container exec -t <containerID> bash"
+# when we write commands like :
+"docker container exec -it <containerID> bash"
 
 
 It means bash is attached to that container.
 
 
-This commands only works when the specific container is running.
-
-
+# This commands only works when the specific container is running.
 "docker container prune -f": It will delete all the stopped containers.
 
 
-Alpine Images: The Alpine Linux image is a minimal, security-oriented, and lightweight Linux distribution. I It's commonly used in Docker images because of its small size and efficient nature.
+# Alpine Images : The Alpine Linux image is a minimal, security-oriented, and lightweight Linux distribution.
+# It's commonly used in Docker images because of its small size and efficient nature.
 
 
-Once we have pulled this image we can use the Linux based commands.
+# Once we have pulled this image we can use the Linux based commands.
 
 
-When we want to run an image in the background then we can run in the detatch mode :
-
-
+# When we want to run an image in the background then we can run in the detatch mode :
 "docker run -d alpine ping www.google.com"
-
-
 Here after alpine "ping www.google.com" will go to the alpine terminal to execute it.
 
 
-Any image that is running in docker container for that container base is linux kernel.
+# Any image that is running in docker container for that container base is linux kernel.
 
 
-command : " docker run -d -p 8080:80 nginx"
+command : "docker run -d -p 8080:80 nginx"
 
-Here this commands means forwards all the request to the "localhost://8080" that we are making on the containers port 80.
+Here, this commands means forwards all the request to the "localhost://8080" that we are making on the containers port 80.
 
-Here -p means publish
+Here, -p means publish
 
 This command runs the nginx server 
 
 
-We can find the logs of all the container by their id.
+# We can find the logs of all the container by their id.
+"docker logs <first four numbers or complete containerId >"
 
-"docker logs <first four numbers or complete container id >"
 
+# we can also find the logs of last n seconds:
+"docker logs --since 5s <containerID>"
 
-we can also find the logs of last n seconds:
-
-"docker logs --since 5s <container ID>"
-
-We can also check the live logs on the terminal by :
-
+# We can also check the live logs on the terminal by :
 "docker attach <container ID>"
 this commands attach the container terminal to our terminal shows all the live logs.
 
-we can remove all the images by using commands :
+# we can remove all the images by using commands :
 docker rmi (docker images -q)
 
 
@@ -145,15 +135,16 @@ We can also run the mysql in the detached mode(In the background).
 
 Once the mysql is running in the detached mode we can enter into the mysql container by run the command : 
 
-docker exec -it "Container ID or image name" bash 
+docker exec -it "ContainerID or image-name" bash 
 
 After running this command : a bash shell will be visible. 
-Then by entering the username and password we can enter into it. 
 
+# Then by entering the username and password we can enter into it. 
 mysql -u root -p 
-Then enter password : 
 
-Then we can use msyql.  
+# Then enter password : 
+
+# Then we can use msyql.  
 
 # We can exit from any bash shell or mysql by running command :
 exit 
@@ -177,18 +168,18 @@ docker image tag myImage:latest rupeshkumar4511/myImage:latest
 FROM ubuntu
 CMD ["echo", "Hello world"]
 
-// here ubuntu is base image 
+// Here ubuntu is base image 
 
-// To push the image to docker registry the image name must have username of docker registry like : rupeshkumar4511/myimage:latest
+# To push the image to docker registry, image's name must have username of docker registry like : rupeshkumar4511/myimage:latest
 
 3. run the command: docker build  -t <imagename>: <version>
 
 4. push the image to docker registry :
 
-First of login using command: docker login
+# First of all, login using command: docker login
 
 Then push the image using command: docker push <imagename>: <tag>
-here tag is also called version of the images.
+Here "tag" is also called version of the images.
 
 ```
 
@@ -198,12 +189,19 @@ here tag is also called version of the images.
 <br>
 Explaination : 
 <br>
-when the client run commmand like "docker run hello world" on the terminal then it goes to the "docker daemon" ("docker daemon" is responsible for the networking job like pulling images and dealing with api etc). Then the command goes to "containerd" through "grpc"(a kind of remote procedural call) . "containerd" is not the one who is creating container out of images. "runc" is responsible for start/create or stop the containers. Once the containers starts then "shim" takesover all the responsibility from the runc and runc will go out of scope. Now "shim" manages how the containerd talks to running containers.
+when the client run command like "docker run hello world" on the terminal then it goes to the "docker daemon" ("docker daemon" is responsible for the networking job like pulling images and dealing with api etc). Then the command goes to "containerd" through "grpc"(a kind of remote procedural call) . "containerd" is not the one who is creating container out of images. "runc" is responsible for start/create or stop the containers. Once the containers starts then "shim" takesover all the responsibility from the runc and runc will go out of scope. Now "shim" manages how the containerd talks to running containers.
 These are called daemon-less containers because once the daemon is down, the containers will still be running.
+<br>
+"shim" is a lightweight process that sits between a running container and containerd. 
+<br>
+Because of the shim, containers are daemon-less — even if the higher-level daemon (dockerd or containerd) crashes or is stopped, the shim keeps the container's process running.
+<br>
+In sort : The shim is a small per-container process (called containerd-shim) whose job is to manage the lifecycle and IO of a running container after runc has started it — allowing the container to keep running independently from the main container runtime daemon.
 
 # How to write DockerFile : 
 Writing Dockerfile for a java application :
 <br>
+
 ```bash 
 
 # pull a base image which gives all required tools and libraries 
@@ -238,7 +236,8 @@ When we update our code on host system then we need to update the image and we c
 ```bash 
 docker build  -t <imagename>: <version> . 
 
-// here "." denotes Dockerfile present in current directory and -t flag means tag which is used to name and optionally tag the image that is being built.. 
+// here "." denotes Dockerfile present in current directory and -t flag means tag which is used to name 
+// and optionally tag the image that is being built.
 ```
 <br>
 
@@ -261,17 +260,30 @@ CMD ["java","-jar","app.jar"]
 # Docker Network :
 Since Different Application running on different container and each container is isolated so if a container wants to communicate to another container then Docker Network comes in picture. 
 <br>
+<br>
 There are mainly 7 types Docker Network : 
 <br>
 1. Host Network: Host machine network and container network both are same. It means all the port for the host and port used for containers are same. 
 <br>
 <br>
-2. Bridge(Default) Network : This is the default network provided by the docker which is used to connect host to the docker container.
+2. Bridge(Default) Network : This is the default network provided by the docker which is used to connect host 
+to the docker container. When we install Docker on our machine, it automatically creates a default network 
+named bridge. This is a virtual network inside the host, which Docker uses to connect containers to each other 
+and to the host system.
+<br>
+
+```bash 
+# we can check it. 
+docker network ls
+
+```
+
 <br>
 <br>
 3. User Defined Bridge(Custom) Network: 
-We can create our custom bridge.Containers in the same bridge network can communicate using container names.
+We can create our custom bridge. Containers in the same bridge network can communicate using container names.
 <br>
+
 ```bash 
 
 docker network create -d my_bridge
@@ -279,16 +291,20 @@ docker run -d --name container1 --network my_bridge nginx
 docker run -d --name container2 --network my_bridge alpine sleep 1000
 
 // container1 and container2 can communicate using their names.
+// The purpose of "sleep 1000" here is to keep the container running for 1000 seconds
 
 ```
+
 <br>
 <br>
 4. None Network:
 Disable networking for a container.
 <br>
+
 ```bash 
 docker run --rm --network none alpine
 ```
+
 <br>
 <br>
 5. MACVLAN Network(Used in Docker Swarm) :
@@ -349,6 +365,7 @@ Uses VXLAN (Virtual Extensible LAN) to encapsulate container traffic.
 Requires Docker Swarm (docker swarm init).
 <br>
 <br>
+
 ```bash 
 
 // Note : We can check the docker network by run command : 
@@ -360,7 +377,9 @@ docker network create mynetwork -d bridge
 // here -d means driver . Actully all the above networks are drivers. 
 
 ```
+
 # How Two or more containers communicates : 
+
 ```bash 
 
 docker network create -d my_bridge
@@ -380,6 +399,7 @@ docker run -d -p 5500:5500 --name container2 --network my_bridge -e MYSQL_HOST=c
 # Docker Volumes and Storages : 
 Entire data about an application which is running in the container remains in the container. So if a container is stopped and removed accidentily then all the application's data will be lost. So to avoid this, we create a folder/path in the host os and map/bind this path to the particular docker container to store data in the host file system. This concept is called docker volumes. 
 <br>
+
 ```bash 
 // how to check the volumes in docker :
 docker volume ls 
@@ -404,11 +424,13 @@ First Create a folder "volumes/mysql"
 docker run -d --name container1 --network my-bridge -v home/ubuntu/volumes/mysql:/var/lib/volumes/mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=root mysql 
 
 ```
+
 <br>
 
 # Docker compose : 
 Docker Compose is a tool for defining and managing multi-container Docker applications. It allows you to define and run multiple containers as a single service using a YAML configuration file (docker-compose.yml).
 <br>
+
 ```bash 
 // To use docker compose we need to install it 
 sudo apt-get install docker-compose
@@ -441,11 +463,14 @@ When you need to ensure you're using the latest code updates in the image.
 Useful after modifying environment variables or config files.
 
 ```
-<br>
-```bash 
-Key Features of Docker Compose:
 
-Multi-Container Management -> Helps in running multiple dependent containers together (e.g., a web app and a database).
+<br>
+
+```bash 
+# Key Features of Docker Compose:
+
+Multi-Container Management -> Helps in running multiple dependent containers together 
+(e.g., a web app and a database).
 
 Simplified Configuration -> Uses docker-compose.yml for defining services, networks, and volumes.
 
@@ -458,7 +483,9 @@ Environment Management -> Supports .env files for defining variables.
 Volume Persistence -> Ensures data persistence between container restarts
 
 ```
+
 <br>
+
 ```bash 
 // Uses of docker-compose : 
 
@@ -546,21 +573,25 @@ networks:
 
 
 ```
+
 <br>
 Some Important point : 
 <br>
+
 ```bash 
-# If we have not provide "CMD []" command to run the application then We can also add this command docker-compose file.  
+# If we have not provide "CMD []" command to run the application then We can also add this command to 
+docker-compose file.  
 
 command: sh -c "python manage.py migrate --no-input && gunicorn myapp.wsgi --bind 0.0.0.0:8000"
 
 # Here, gunicorn is a production-ready WSGI server for Django
+
 # "python manage.py migrate --no-input" : This command runs Django database migrations which means it ensures that all the required database,table should be made. 
 
 # Database migration is the process of applying changes to a database schema over time. It helps manage changes like creating tables, modifying columns, adding indexes, etc., in a structured way.
 
 
-#The --no-input flag prevents interactive prompts, making it suitable for automated deployments.
+# The --no-input flag prevents interactive prompts, making it suitable for automated deployments.
 
 # "gunicorn myapp.wsgi --bind 0.0.0.0:8000 " will serve this application in backend. 
 
@@ -580,7 +611,8 @@ WORKDIR /app
 
 COPY requirements.txt . 
 
-# requirements.txt contains the all "packagename==version" and -r indicates read dependecies from requirements.txt file . 
+# requirements.txt contains the all "packagename==version" and -r indicates read dependecies from 
+requirements.txt file. 
 
 RUN pip install -r requirements.txt 
 
@@ -600,11 +632,12 @@ CMD ["python","app.py"]
 
 
 # Docker monitering and logging : 
+
 ```bash 
 
 # We can find the logs of all the container by their id.
 
-"docker logs <first four numbers or complete container id >"
+"docker logs <first four-numbers or complete-container-id >"
 
 
 # we can also find the logs of last n seconds:
@@ -622,6 +655,8 @@ CMD ["python","app.py"]
 "nohup docker attach <ContainerID> & "
 # It will store all the logs in nohup.out file . 
 
+Here "nohup" : Stands for no "hangup" . It prevents the command from being terminated even if your terminal session is closed or you log out.
+
 ```
 
 # Docker Scout : 
@@ -629,6 +664,7 @@ Docker Scout is a security and analysis tool that helps scan, analyze, and monit
 <br>
 When we install docker desktop then docker scout tool is already installed in it. 
 <br>
+
 ```bash 
 // To analyze a local images 
 docker scout quickview myimage:latest
@@ -640,11 +676,15 @@ docker scout cves myimage:latest
 # cves:  (Common Vulnerabilities and Exposures)
 
 ```
+
 # Docker init 
-It is a new Docker CLI command that helps you quickly create a Dockerfile and related files for containerizing an application like docker-compose.yaml,.dockerignore  and README.docker.md file .
+It is a new Docker CLI command that helps you quickly create a Dockerfile and related files for containerizing 
+an application like docker-compose.yaml, .dockerignore and README.docker.md file .
 <br>
 When we install docker desktop then docker init tool is already installed in it.
 <br>
+
 ```bash 
 docker init 
+
 ```

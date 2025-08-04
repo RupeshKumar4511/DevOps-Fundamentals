@@ -8,7 +8,7 @@ hello:"This is yaml best practice"
 ---
 #Block style for list
 
-ciities:
+cities:
  -Karnal
  -Kurushetra
  -Ambala
