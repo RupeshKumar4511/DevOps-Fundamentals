@@ -6,13 +6,20 @@ It is a container orchestration and an open-source platform designed to automate
 <br>
 A Kubernetes cluster consists of a control plane plus a set of worker machines, called nodes(Data plane), that run containerized applications. Every cluster needs at least one worker node in order to run Pods.
 <br>
+<b>Pod : </b>
+<br>
+Pod is the smallest and simplest deployable unit we can create and manage. 
+A Pod encapsulates one or more containers (such as Docker) that are tightly coupled and need to share resources(network and volumes). 
+<br>
+To create a Pod, we define its configuration in a YAML file(pod.yaml) and then use the kubectl command-line tool to apply it to your cluster.
+<br>
 <b>Control Plane (Master Node) components </b>
 <br>
 <b>Kube-apiserver : </b>
 <br>
 The API server is a component of the Kubernetes control plane that exposes the Kubernetes API. The API server is the front end for the Kubernetes control plane.
 <br>
-Users interact with the Kube-apiserver. If user wants to create a pod then api-server create pod and checks which worker node is free and then kube-schedular schedule the pod to worker node. 
+Users interact with the Kube-apiserver. If user wants to create a pod then api-server intiate the request and store the pod information in etcd and it also checks which worker node is free and send this information to kube-schedular and then kube-schedular schedule the pod to worker node. 
 <br>
 <b>Scheduler : </b>
 <br>
@@ -31,7 +38,7 @@ The cloud-controller-manager only runs controllers that are specific to your clo
 <br>
 <b>Data Plane (Worker Node) components</b>
 <br>
-Kubelet : It is responsible for ensuring the pod is always running. 
+Kubelet : It is responsible for creation of pod and ensuring that the pod is always running.  If a container inside a pod crashes, the Kubelet sees this and restarts it automatically. If the entire pod is deleted or the node itself fails, the Kubelet cannot fix it. The Kubelet simply stops reporting a "Ready" status to the API Server. High-level controllers (like the Deployment or ReplicaSet controller) are the ones watching the API server. When they see the "actual state" (0 pods running) doesn't match the "desired state" (1 pod running), they are the ones that tell the API server to schedule a brand-new pod.
 <br>
 <b>CRI : </b> It Stands for Container Runtime Interface. It can be containrd, dockershim,etc which provide environment to run pods.
 <br>
